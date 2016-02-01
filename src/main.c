@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "pool.h"
 
 #ifndef _MSC_VER
@@ -74,7 +75,7 @@ int main()
 	//testPool();
 	printf("%d/%d (%f%%)\n", sizeof(pool_t), POOL_MAX_SIZE, 100.f*(float)sizeof(pool_t)/(float)POOL_MAX_SIZE);
 	
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	pool_err err;
 	list l;
 	pool_u i;
