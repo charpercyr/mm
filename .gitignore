@@ -306,3 +306,5 @@ Makefile.in
 ar-lib
 config.status
 Makefile
+
+*.tar*
