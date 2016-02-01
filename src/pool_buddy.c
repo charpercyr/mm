@@ -144,7 +144,7 @@ POOL_FUNC void pool_buddy_free(pool_buddy* p, void* ptr, pool_err* err)
 	if (ptr == NULL)
 		return;
 	POOL_SET_ERR_IF(p == NULL, err, POOL_ERR_INVALID_POOL, );
-	POOL_SET_ERR_IF(ptr < p->mem || ptr > (char*)p->mem + POOL_BUDDY_MAX_SIZE, err, POOL_ERR_INVALID_PTR, );
+	POOL_SET_ERR_IF(ptr < p->mem || (char*)ptr > (char*)p->mem + POOL_BUDDY_MAX_SIZE, err, POOL_ERR_INVALID_PTR, );
 
 	ptr_pos = (pool_u)(POOL_CEIL_DIV((char*)ptr - (char*)p->mem, POOL_BUDDY_BLOCK_SIZE) + POOL_BUDDY_BLOCK_N);
 	while (POOL_GET_BIT(p->tree, ptr_pos) && ptr_pos != 0)
