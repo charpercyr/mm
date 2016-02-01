@@ -39,7 +39,7 @@ typedef pool_u pool_size;
 #define POOL_PAGE_SIZE 512
 #endif
 
-/** Block size (default 8B) */
+/** Block size (default 4B) */
 #ifndef POOL_BLOCK_SIZE
 #define POOL_BLOCK_SIZE 4
 #endif

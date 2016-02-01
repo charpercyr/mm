@@ -42,7 +42,7 @@ int getRand()
 	return rand() << 16 | rand();
 }
 
-#define N 256
+#define N 4096
 int* tab[N];
 
 void testMalloc()
@@ -86,17 +86,15 @@ int main()
 		list_add(&l, getRand());
 
 	pool_slab_dump_all(before, &p, POOL_PAGE_SIZE);
-	fprintf(before, "======================= MEM =======================\n");
+	fprintf(before, "\n======================= MEM =======================\n");
 	pool_mem_dump(before, pool_mem, POOL_MAX_SIZE);
-
-	printf("%d\n\n", sizeof(node));
 
 	for (i = 0; i < N; i++)
 		printf("%d ", list_get(&l, i));
 	list_delete(&l);
 
 	pool_slab_dump_all(after, &p, POOL_PAGE_SIZE);
-	fprintf(before, "======================= MEM =======================\n");
+	fprintf(after, "\n======================= MEM =======================\n");
 	pool_mem_dump(after, pool_mem, POOL_MAX_SIZE);
 
 	printf("\n");

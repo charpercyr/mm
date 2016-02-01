@@ -17,8 +17,6 @@
 
 /** Pool type */
 typedef pool_slab pool_t;
-/** Pool stats type */
-typedef pool_slab_stats pool_stats_t;
 
 /** @} */
 
