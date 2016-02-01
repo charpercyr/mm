@@ -86,6 +86,8 @@ int main()
 		list_add(&l, getRand());
 
 	pool_slab_dump_all(before, &p, POOL_PAGE_SIZE);
+	fprintf(before, "======================= MEM =======================\n");
+	pool_mem_dump(before, pool_mem, POOL_MAX_SIZE);
 
 	printf("%d\n\n", sizeof(node));
 
@@ -94,6 +96,8 @@ int main()
 	list_delete(&l);
 
 	pool_slab_dump_all(after, &p, POOL_PAGE_SIZE);
+	fprintf(before, "======================= MEM =======================\n");
+	pool_mem_dump(after, pool_mem, POOL_MAX_SIZE);
 
 	printf("\n");
 	EXIT(0);
