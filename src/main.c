@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include "pool.h"
 
+#ifndef _MSC_VER
+#define fopen_s(file, filename, mode) *file=fopen(filename, mode)
+#endif
+
 typedef struct _node
 {
 	struct _node* next;
@@ -17,7 +21,7 @@ typedef struct _list
 } list;
 
 void list_init(list* l, pool_slab* pool);
-void list_add(list* l, void* val);
+void list_add(list* l, int val);
 void list_rem(list* l);
 int list_get(list* l, pool_u i);
 void list_delete(list* l);
@@ -85,7 +89,7 @@ int main()
 	for (i = 0; i < N; i++)
 		list_add(&l, getRand());
 
-	pool_slab_dump_all(before, &p, POOL_PAGE_SIZE);
+	pool_slab_dump_all(before, &p);
 	fprintf(before, "\n======================= MEM =======================\n");
 	pool_mem_dump(before, pool_mem, POOL_MAX_SIZE);
 
@@ -93,7 +97,7 @@ int main()
 		printf("%d ", list_get(&l, i));
 	list_delete(&l);
 
-	pool_slab_dump_all(after, &p, POOL_PAGE_SIZE);
+	pool_slab_dump_all(after, &p);
 	fprintf(after, "\n======================= MEM =======================\n");
 	pool_mem_dump(after, pool_mem, POOL_MAX_SIZE);
 

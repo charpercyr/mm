@@ -132,7 +132,7 @@ POOL_FUNC void* pool_slab_malloc(pool_slab* p, pool_size size, pool_err* err)
 			set_2_bits(p->slabs, i, RAW);
 		void* ret = i*POOL_SLAB_PAGE_SIZE + (char*)p->mem;
 		*((pool_u*)ret) = n_pages;
-		((char*)ret) += sizeof(pool_u);
+		ret = (char*)ret + sizeof(pool_u);
 		return ret;
 	}
 	// Page with buddy allocator
@@ -171,8 +171,8 @@ POOL_FUNC void pool_slab_free(pool_slab* p, void* ptr, pool_err* err)
 	POOL_SET_ERR(err, POOL_ERR_OK);
 	if (p == NULL)
 		return;
-	POOL_SET_ERR_IF(p == NULL, err, POOL_ERR_INVALID_POOL, err);
-	POOL_SET_ERR_IF(ptr < p->mem || ptr > (char*)p->mem + POOL_SLAB_MAX_SIZE, err, POOL_ERR_INVALID_PTR, NULL);
+	POOL_SET_ERR_IF(p == NULL, err, POOL_ERR_INVALID_POOL, );
+	POOL_SET_ERR_IF(ptr < p->mem || (char*)ptr > (char*)p->mem + POOL_SLAB_MAX_SIZE, err, POOL_ERR_INVALID_PTR,);
 	page = ((pool_u)ptr - (pool_u)p->mem) / POOL_SLAB_PAGE_SIZE;
 	type = get_2_bits(p->slabs, page);
 	POOL_SET_ERR_IF(type == EMPTY, err, POOL_ERR_INVALID_PTR, );
