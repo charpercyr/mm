@@ -21,10 +21,14 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\main.c" />
     <ClCompile Include="..\..\src\pool_buddy.c" />
+    <ClCompile Include="..\..\src\pool_defs.c" />
+    <ClCompile Include="..\..\src\pool_slab.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\pool.h" />
     <ClInclude Include="..\..\src\pool_buddy.h" />
     <ClInclude Include="..\..\src\pool_defs.h" />
+    <ClInclude Include="..\..\src\pool_slab.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B0E01D68-2115-4E74-8D01-78FC5E959461}</ProjectGuid>
