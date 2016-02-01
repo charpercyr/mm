@@ -32,7 +32,7 @@ void pool_slab_dump_all(FILE* dump, pool_slab* p);
 
 void pool_mem_dump(FILE* dump, void* mem, pool_size size);
 
-pool_slab p;
+pool_t p;
 char pool_mem[POOL_MAX_SIZE];
 
 #define EXIT(err) {system("pause"); return err;}
@@ -42,7 +42,7 @@ int getRand()
 	return rand() << 16 | rand();
 }
 
-#define N 10000
+#define N 256
 int* tab[N];
 
 void testMalloc()
@@ -68,7 +68,7 @@ int main()
 	pool_init(&p, pool_mem, NULL);
 	//testMalloc();
 	//testPool();
-	printf("done\n");
+	printf("%d/%d (%f%%)\n", sizeof(pool_t), POOL_MAX_SIZE, 100.f*(float)sizeof(pool_t)/(float)POOL_MAX_SIZE);
 	
 	srand(time(NULL));
 	pool_err err;

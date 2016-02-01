@@ -29,19 +29,19 @@ typedef unsigned int pool_u;
 typedef pool_u pool_size;
 
 
-/** Memory size (default 8M) */
+/** Memory size (default 128K) */
 #ifndef POOL_MAX_SIZE
-#define POOL_MAX_SIZE (4*1024*1024)
+#define POOL_MAX_SIZE (128*1024)
 #endif
 
-/** Page size (default 4K) */
+/** Page size (default 512B) */
 #ifndef POOL_PAGE_SIZE
-#define POOL_PAGE_SIZE (4*1024)
+#define POOL_PAGE_SIZE 512
 #endif
 
 /** Block size (default 8B) */
 #ifndef POOL_BLOCK_SIZE
-#define POOL_BLOCK_SIZE 8
+#define POOL_BLOCK_SIZE 4
 #endif
 
 /** Divides and ceil the result */

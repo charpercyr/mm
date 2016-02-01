@@ -209,7 +209,7 @@ POOL_FUNC void pool_slab_stat(pool_slab* p, pool_slab_stats* stats, pool_err* er
 	pool_u i;
 	pool_u s;
 	POOL_SET_ERR(err, POOL_ERR_OK);
-	stats->size = POOL_SLAB_PAGE_SIZE;
+	stats->size = POOL_SLAB_PAGE_SIZE*POOL_SLAB_PAGE_N;
 	stats->n_pages = POOL_SLAB_PAGE_N;
 	stats->n_pages_empty = 0;
 	stats->n_pages_full = 0;
