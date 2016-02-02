@@ -111,7 +111,7 @@ POOL_FUNC void* pool_buddy_malloc(pool_buddy* p, pool_size size, pool_err* err)
 	if (size < POOL_BUDDY_BLOCK_SIZE)
 		size = POOL_BUDDY_BLOCK_SIZE;
 
-	max_level = pool_log2(POOL_CEIL_DIV(POOL_BUDDY_MAX_SIZE, size));
+	max_level = pool_log2(POOL_BUDDY_MAX_SIZE / size);
 	pos = find_pos(p->tree, max_level, 1, depth);
 	POOL_SET_ERR_IF(pos == 0, err, POOL_ERR_OUT_OF_MEM, NULL);
 
