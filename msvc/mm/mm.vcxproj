@@ -19,12 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\list.c" />
     <ClCompile Include="..\..\src\main.c" />
     <ClCompile Include="..\..\src\pool_buddy.c" />
     <ClCompile Include="..\..\src\pool_defs.c" />
     <ClCompile Include="..\..\src\pool_slab.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\list.h" />
     <ClInclude Include="..\..\src\pool.h" />
     <ClInclude Include="..\..\src\pool_buddy.h" />
     <ClInclude Include="..\..\src\pool_defs.h" />
