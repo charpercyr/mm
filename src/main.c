@@ -1,31 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "pool.h"
+#include "list.h"
 
 #ifndef _MSC_VER
 #define fopen_s(file, filename, mode) *file=fopen(filename, mode)
 #endif
-
-typedef struct _node
-{
-	struct _node* next;
-	struct _node* prev;
-	int data;
-} node;
-
-typedef struct _list
-{
-	node* first;
-	node* last;
-	pool_slab* pool;
-} list;
-
-void list_init(list* l, pool_slab* pool);
-void list_add(list* l, int val);
-void list_rem(list* l);
-int list_get(list* l, pool_u i);
-void list_delete(list* l);
 
 void pool_buddy_dump(FILE* dump, pool_buddy* p);
 void pool_buddy_stats_dump(FILE* dump, pool_buddy_stats* stats);
@@ -40,63 +20,43 @@ void pool_mem_dump(FILE* dump, void* mem, pool_size size);
 pool_t p;
 char pool_mem[POOL_MAX_SIZE];
 
-#define EXIT(err) {system("pause"); return err;}
+#define EXIT(err) exit(err)
 
-int getRand()
+#define N 2049
+
+int print_list_elem(const pool_list_node* n, void* data)
 {
-	return rand() << 16 | rand();
-}
-
-#define N 4096
-int* tab[N];
-
-void testMalloc()
-{
-	pool_u i;
-	for (i = 0; i < N; i++)
-		tab[i] = malloc(sizeof(int));
-	for (i = 0; i < N; i++)
-		free(tab[i]);
-}
-
-void testPool()
-{
-	pool_u i;
-	for (i = 0; i < N; i++)
-		tab[i] = pool_malloc(&p, sizeof(int), NULL);
-	for (i = 0; i < N; i++)
-		pool_free(&p, tab[i], NULL);
+	printf("%d ", (int)n->data);
+	return 1;
 }
 
 int main()
 {
-	pool_init(&p, pool_mem, NULL);
-	//testMalloc();
-	//testPool();
-	printf("%d/%d (%f%%)\n", sizeof(pool_t), POOL_MAX_SIZE, 100.f*(float)sizeof(pool_t)/(float)POOL_MAX_SIZE);
+	printf("Pool overhead : %d/%d (%f%%)\n", sizeof(pool_t), POOL_MAX_SIZE, 100.f*(float)sizeof(pool_t)/(float)POOL_MAX_SIZE);
+	printf("Node size : %d\n", sizeof(pool_list_node));
+	printf("Ptr size : %d\n", sizeof(void*));
 	
 	srand((unsigned int)time(NULL));
 	pool_err err;
-	list l;
+	pool_list l;
 	pool_u i;
 	FILE *before, *after;
 	fopen_s(&before, "before.test", "w");
 	fopen_s(&after, "after.test", "w");
 
-	pool_slab_init(&p, pool_mem, &err);
+	pool_init(&p, pool_mem, &err);
 	if (err)
 		EXIT(err);
-	list_init(&l, &p);
+	pool_list_init(&l, &p, NULL);
 	for (i = 0; i < N; i++)
-		list_add(&l, getRand());
+		pool_list_push_back(&l, i, NULL);
 
 	pool_slab_dump_all(before, &p);
 	fprintf(before, "\n======================= MEM =======================\n");
 	pool_mem_dump(before, pool_mem, POOL_MAX_SIZE);
 
-	for (i = 0; i < N; i++)
-		printf("%d ", list_get(&l, i));
-	list_delete(&l);
+	pool_list_iterate(&l, print_list_elem, NULL, NULL);
+	pool_list_delete(&l, NULL);
 
 	pool_slab_dump_all(after, &p);
 	fprintf(after, "\n======================= MEM =======================\n");
@@ -104,80 +64,6 @@ int main()
 
 	printf("\n");
 	EXIT(0);
-}
-
-void list_init(list* l, pool_slab* pool)
-{
-	l->first = NULL;
-	l->last = NULL;
-	l->pool = pool;
-}
-
-void list_add(list* l,  int val)
-{
-	pool_err err;
-	node* n = pool_slab_malloc(l->pool, sizeof(node), &err);
-	if (err)
-	{
-		printf("%d\n", err);
-		return;
-	}
-	n->next = NULL;
-	n->prev = l->last;
-	n->data = val;
-	if (l->first == NULL)
-	{
-		l->first = n;
-		l->last = n;
-	}
-	else
-	{
-		l->last->next = n;
-		l->last = n;
-	}
-}
-
-void list_rem(list* l)
-{
-	pool_err err;
-	node* n = l->last;
-	if (n != NULL)
-	{
-		if (l->first == l->last)
-		{
-			l->first = l->last = NULL;
-		}
-		else
-			n->prev->next = NULL;
-		pool_slab_free(l->pool, n, &err);
-		if (err)
-			printf("%d\n", err);
-	}
-}
-
-int list_get(list* l, pool_u i)
-{
-	pool_u j;
-	node* n = l->first;
-	for (j = 0; j < i; j++)
-	{
-		n = n->next;
-	}
-	return n->data;
-}
-
-void list_delete(list* l)
-{
-	pool_err err;
-	node* n = l->first;
-	while (n != NULL)
-	{
-		node* n2 = n->next;
-		pool_slab_free(l->pool, n, &err);
-		if (err)
-			printf("%d\n", err);
-		n = n2;
-	}
 }
 
 void pool_buddy_dump(FILE* dump, pool_buddy* p)
