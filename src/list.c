@@ -1,6 +1,14 @@
 #include "list.h"
 
-void pool_list_init(pool_list* list, pool_t* pool, pool_err* err)
+/**
+	@fn void pool_list_init(pool_list* list, pool_t* pool, pool_err* err)
+	@brief Initializes the list
+
+	@param[inout] list The list
+	@param[in] pool The memory pool
+	@param[out] err The error
+*/
+POOL_FUNC void pool_list_init(pool_list* list, pool_t* pool, pool_err* err)
 {
 	POOL_SET_ERR(err, POOL_ERR_OK);
 	POOL_SET_ERR_IF(list == NULL, err, POOL_LIST_ERR_INVALID_LIST, );
@@ -11,7 +19,16 @@ void pool_list_init(pool_list* list, pool_t* pool, pool_err* err)
 	list->tail = NULL;
 }
 
-void pool_list_add(pool_list* list, void* data, pool_list_node* after, pool_err* err)
+/**
+	@fn void pool_list_add(pool_list* list, void* data, pool_list_node* after, pool_err* err)
+	@brief Adds an item to the list
+
+	@param[inout] list The list
+	@param[in] data The data to add
+	@param[in] after The node in the list that will be placed before the new node, NULL for the beginning of the list
+	@param[out] err The error
+*/
+POOL_FUNC void pool_list_add(pool_list* list, void* data, pool_list_node* after, pool_err* err)
 {
 	POOL_SET_ERR(err, POOL_ERR_OK);
 	POOL_SET_ERR_IF(list == NULL, err, POOL_LIST_ERR_INVALID_LIST, );
@@ -48,19 +65,43 @@ void pool_list_add(pool_list* list, void* data, pool_list_node* after, pool_err*
 	}
 }
 
-void pool_list_push_back(pool_list* list, void* data, pool_err* err)
+/**
+	@fn void pool_list_push_back(pool_list* list, void* data, pool_err* err)
+	@brief Adds an item to the end of the list
+
+	@param[inout] list The list
+	@param[in] data The data to add
+	@param[out] err The error
+*/
+POOL_FUNC void pool_list_push_back(pool_list* list, void* data, pool_err* err)
 {
 	POOL_SET_ERR(err, POOL_ERR_OK);
 	POOL_SET_ERR_IF(list == NULL, err, POOL_LIST_ERR_INVALID_LIST, );
 	pool_list_add(list, data, list->tail, err);
 }
 
-void pool_list_push_front(pool_list* list, void* data, pool_err* err)
+/**
+	@fn void pool_list_push_front(pool_list* list, void* data, pool_err* err)
+	@brief Adds an item to the beginning of the list
+
+	@param[inout] list The list
+	@param[in] data The data to add
+	@param[out] err The error
+*/
+POOL_FUNC void pool_list_push_front(pool_list* list, void* data, pool_err* err)
 {
 	pool_list_add(list, data, NULL, err);
 }
 
-void pool_list_remove(pool_list* list, pool_list_node* node, pool_err* err)
+/**
+	@fn void pool_list_remove(pool_list* list, pool_list_node* node, pool_err* err)
+	@brief Removes an item from the list
+
+	@param[inout] list The list
+	@param[in] node The element to remove
+	@param[out] err The error
+*/
+POOL_FUNC void pool_list_remove(pool_list* list, pool_list_node* node, pool_err* err)
 {
 	POOL_SET_ERR(err, POOL_ERR_OK);
 	POOL_SET_ERR_IF(list == NULL, err, POOL_LIST_ERR_INVALID_LIST, );
@@ -79,7 +120,14 @@ void pool_list_remove(pool_list* list, pool_list_node* node, pool_err* err)
 	pool_free(list->pool, node, err);
 }
 
-void pool_list_delete(pool_list* list, pool_err* err)
+/**
+	@fn void pool_list_delete(pool_list* list, pool_err* err)
+	@brief Removes all items from the list
+
+	@param[inout] list The list
+	@param[out] err The error
+*/
+POOL_FUNC void pool_list_delete(pool_list* list, pool_err* err)
 {
 	POOL_SET_ERR(err, POOL_ERR_OK);
 	POOL_SET_ERR_IF(list == NULL, err, POOL_LIST_ERR_INVALID_LIST, );
@@ -90,7 +138,16 @@ void pool_list_delete(pool_list* list, pool_err* err)
 	}
 }
 
-void pool_list_iterate(pool_list* list, pool_list_iterate_func func, void* data, pool_err* err)
+/**
+	@fn void pool_list_iterate(pool_list* list, pool_list_iterate_func func, void* data, pool_err* err)
+	@brief Iterates over all the list's items
+
+	@param[inout] list The list
+	@param[in] func The callback function, the function should return 1 to continue and 0 to stop
+	@param[in] data The data to pass to the function
+	@param[out] err The error
+*/
+POOL_FUNC void pool_list_iterate(pool_list* list, pool_list_iterate_func func, void* data, pool_err* err)
 {
 	POOL_SET_ERR(err, POOL_ERR_OK);
 	POOL_SET_ERR_IF(list == NULL, err, POOL_LIST_ERR_INVALID_LIST, );
