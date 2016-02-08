@@ -24,9 +24,9 @@ char pool_mem[POOL_MAX_SIZE];
 
 #define N 2049
 
-int print_list_elem(const pool_list_node* n, void* data)
+pool_u8 print_list_elem(const pool_list_node* n, void* data)
 {
-	printf("%d ", (int)n->data);
+	printf("0x%.4x ", (pool_u)n->data);
 	return 1;
 }
 
@@ -49,7 +49,7 @@ int main()
 		EXIT(err);
 	pool_list_init(&l, &p, NULL);
 	for (i = 0; i < N; i++)
-		pool_list_push_back(&l, i, NULL);
+		pool_list_push_back(&l, (void*)i, NULL);
 
 	pool_slab_dump_all(before, &p);
 	fprintf(before, "\n======================= MEM =======================\n");
