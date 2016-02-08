@@ -22,7 +22,7 @@ char pool_mem[POOL_MAX_SIZE];
 
 #define EXIT(err) exit(err)
 
-#define N 2049
+#define N 1024
 
 pool_u8 print_list_elem(const pool_list_node* n, void* data)
 {
@@ -30,11 +30,41 @@ pool_u8 print_list_elem(const pool_list_node* n, void* data)
 	return 1;
 }
 
+void* tab[N];
+
+void testMalloc()
+{
+	clock_t start = clock();
+	pool_u i;
+	for(i = 0; i < N; i++)
+		tab[i] = malloc(1024);
+	printf("malloc done in %d ms\n", 1000*(clock()-start)/CLOCKS_PER_SEC);
+	start = clock();
+	for(i = 0; i < N; i++)
+		free(tab[i]);
+	printf("free done in %d ms\n", 1000*(clock()-start)/CLOCKS_PER_SEC);
+}
+
+void testPool()
+{
+	clock_t start = clock();
+	pool_u i;
+	for(i = 0; i < N; i++)
+		tab[i] = pool_malloc(&p, sizeof(pool_u), NULL);
+	printf("pool_malloc done in %d ms\n", 1000*(clock()-start)/CLOCKS_PER_SEC);
+	start = clock();
+	for(i = 0; i < N; i++)
+		pool_free(&p, tab[i], NULL);
+	printf("pool_free done in %d ms\n", 1000*(clock()-start)/CLOCKS_PER_SEC);
+}
+
 int main()
 {
 	printf("Pool overhead : %d/%d (%f%%)\n", sizeof(pool_t), POOL_MAX_SIZE, 100.f*(float)sizeof(pool_t)/(float)POOL_MAX_SIZE);
 	printf("Node size : %d\n", sizeof(pool_list_node));
 	printf("Ptr size : %d\n", sizeof(void*));
+
+	clock_t start;
 	
 	srand((unsigned int)time(NULL));
 	pool_err err;
@@ -45,18 +75,27 @@ int main()
 	fopen_s(&after, "after.test", "w");
 
 	pool_init(&p, pool_mem, &err);
+	printf("For %d elements\n", N);
+	testMalloc();
+	testPool();
+
 	if (err)
 		EXIT(err);
+	start = clock();
 	pool_list_init(&l, &p, NULL);
 	for (i = 0; i < N; i++)
 		pool_list_push_back(&l, (void*)i, NULL);
+	printf("Done malloc in %.4d ms\n", 1000*(clock()-start)/CLOCKS_PER_SEC);
 
 	pool_slab_dump_all(before, &p);
 	fprintf(before, "\n======================= MEM =======================\n");
 	pool_mem_dump(before, pool_mem, POOL_MAX_SIZE);
 
 	pool_list_iterate(&l, print_list_elem, NULL, NULL);
+	start = clock();
 	pool_list_delete(&l, NULL);
+
+	printf("\nDone free in %.4d ms\n", 1000*(clock()-start)/CLOCKS_PER_SEC);
 
 	pool_slab_dump_all(after, &p);
 	fprintf(after, "\n======================= MEM =======================\n");
