@@ -67,7 +67,7 @@ POOL_FUNC static pool_u find_pos(pool_u8* tree, pool_u8 max_level, pool_u pos, p
 		return 0;
 	if (level == max_level)
 	{
-		if (POOL_GET_BIT(tree, pos))
+		if (POOL_GET_BIT(tree, pos) && check_pos(tree, pos, depth))
 			return pos;
 		else
 			return 0;
