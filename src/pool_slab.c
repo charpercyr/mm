@@ -9,7 +9,7 @@
 
 	@return The type of page
 */
-POOL_FUNC static pool_slab_page_type get_2_bits(char* buf, pool_u at)
+POOL_FUNC static pool_slab_page_type get_2_bits(pool_u8* buf, pool_u at)
 {
 	return (pool_slab_page_type)((POOL_GET_BIT(buf, 2 * at) << 1) | POOL_GET_BIT(buf, 2 * at + 1));
 }
@@ -22,7 +22,7 @@ POOL_FUNC static pool_slab_page_type get_2_bits(char* buf, pool_u at)
 	@param at The index
 	@param type The type to set
 */
-POOL_FUNC static void set_2_bits(char* buf, pool_u at, pool_slab_page_type type)
+POOL_FUNC static void set_2_bits(pool_u8* buf, pool_u at, pool_slab_page_type type)
 {
 	switch (type)
 	{
