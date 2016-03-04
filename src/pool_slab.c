@@ -90,10 +90,10 @@ POOL_FUNC static pool_u find_empty_page(pool_u8* slabs, pool_u n_pages)
 	return POOL_SLAB_PAGE_N;
 }
 
-POOL_FUNC static pool_u find_page(pool_slab* p, pool_size size)
+POOL_FUNC static pool_u find_page(pool_slab* p, pool_size size, pool_size from, pool_size to)
 {
 	pool_u i;
-	for (i = 0; i < POOL_SLAB_PAGE_N; i++)
+	for (i = from; i < to; i++)
 	{
 		pool_slab_page_type type = get_2_bits(p->slabs, i);
 		if (type == EMPTY || type == PARTIAL)
@@ -118,16 +118,17 @@ POOL_FUNC void* pool_slab_malloc(pool_slab* p, pool_size size, pool_err* err)
 {
 	POOL_SET_ERR(err, POOL_ERR_OK);
 	POOL_SET_ERR_IF(p == NULL, err, POOL_ERR_INVALID_POOL, NULL);
-	pool_u n_pages, first_page;
+	pool_u n_pages, page;
 	pool_u i = 0;
 	pool_size s;
+	pool_err err2;
 	// RAW Page
 	if (size > POOL_SLAB_PAGE_SIZE)
 	{
 		n_pages = POOL_CEIL_DIV(size + sizeof(pool_u), POOL_SLAB_PAGE_SIZE);
-		first_page = find_empty_page(p->slabs, n_pages);
-		POOL_SET_ERR_IF(first_page == POOL_SLAB_PAGE_N, err, POOL_ERR_OUT_OF_MEM, NULL);
-		for (i = first_page; i < first_page + n_pages; i++)
+		page = find_empty_page(p->slabs, n_pages);
+		POOL_SET_ERR_IF(page == POOL_SLAB_PAGE_N, err, POOL_ERR_OUT_OF_MEM, NULL);
+		for (i = page; i < page + n_pages; i++)
 			set_2_bits(p->slabs, i, RAW);
 		void* ret = i*POOL_SLAB_PAGE_SIZE + (char*)p->mem;
 		*((pool_u*)ret) = n_pages;
@@ -137,17 +138,24 @@ POOL_FUNC void* pool_slab_malloc(pool_slab* p, pool_size size, pool_err* err)
 	// Page with buddy allocator
 	else
 	{
-		first_page = find_page(p, size);
-		POOL_SET_ERR_IF(first_page == POOL_SLAB_PAGE_N, err, POOL_ERR_OUT_OF_MEM, NULL);
-		void* ret = pool_buddy_malloc(p->buddies + first_page, size, err);
-		POOL_SET_ERR_IF(err ? *err : 0, err, *err, NULL);
-		s = p->buddies[first_page].allocated*POOL_BUDDY_BLOCK_SIZE;
-		POOL_SET_ERR_IF(err ? *err : 0, err, *err, NULL);
-		if (s == POOL_SLAB_PAGE_SIZE)
-			set_2_bits(p->slabs, first_page, FULL);
-		else
-			set_2_bits(p->slabs, first_page, PARTIAL);
-		return ret;
+		page = 0;
+		while(page < POOL_SLAB_PAGE_N)
+		{
+			page = find_page(p, size, page, POOL_SLAB_PAGE_N);
+			void* ret = pool_buddy_malloc(p->buddies + page, size, &err2);
+			if(!err2)
+			{
+				s = p->buddies[page].allocated*POOL_BUDDY_BLOCK_SIZE;
+				POOL_SET_ERR_IF(err ? *err : 0, err, *err, NULL);
+				if (s == POOL_SLAB_PAGE_SIZE)
+					set_2_bits(p->slabs, page, FULL);
+				else
+					set_2_bits(p->slabs, page, PARTIAL);
+				return ret;
+			}
+			page++;
+		}
+		POOL_SET_ERR(err, POOL_ERR_OUT_OF_MEM);
 	}
 	return NULL;
 }
