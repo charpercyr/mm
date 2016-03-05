@@ -76,7 +76,7 @@ POOL_FUNC static pool_u find_empty_page(pool_u8* slabs, pool_u n_pages)
 	for (i = 0; i < POOL_SLAB_PAGE_N - n_pages; i++)
 	{
 		ok = 1;
-		for (j = i; j < n_pages; j++)
+		for (j = i; j < n_pages + i; j++)
 		{
 			if (get_2_bits(slabs, j) != EMPTY)
 			{
@@ -177,7 +177,7 @@ POOL_FUNC void pool_slab_free(pool_slab* p, void* ptr, pool_err* err)
 	pool_size s;
 	pool_u i = 0;
 	POOL_SET_ERR(err, POOL_ERR_OK);
-	if (p == NULL)
+	if (ptr == NULL)
 		return;
 	POOL_SET_ERR_IF(p == NULL, err, POOL_ERR_INVALID_POOL, );
 	POOL_SET_ERR_IF(ptr < p->mem || (char*)ptr > (char*)p->mem + POOL_SLAB_MAX_SIZE, err, POOL_ERR_INVALID_PTR,);
