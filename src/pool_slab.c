@@ -130,7 +130,7 @@ POOL_FUNC void* pool_slab_malloc(pool_slab* p, pool_size size, pool_err* err)
 		POOL_SET_ERR_IF(page == POOL_SLAB_PAGE_N, err, POOL_ERR_OUT_OF_MEM, NULL);
 		for (i = page; i < page + n_pages; i++)
 			set_2_bits(p->slabs, i, RAW);
-		void* ret = i*POOL_SLAB_PAGE_SIZE + (char*)p->mem;
+		void* ret = page*POOL_SLAB_PAGE_SIZE + (char*)p->mem;
 		*((pool_u*)ret) = n_pages;
 		ret = (char*)ret + sizeof(pool_u);
 		return ret;
