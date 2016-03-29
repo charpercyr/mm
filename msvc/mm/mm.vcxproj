@@ -18,6 +18,18 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\mm.h" />
+    <ClInclude Include="..\..\src\common.h" />
+    <ClInclude Include="..\..\src\config.h" />
+    <ClInclude Include="..\..\src\simple_mm.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\mm.c" />
+    <ClCompile Include="..\..\src\common.c" />
+    <ClCompile Include="..\..\src\simple_mm.c" />
+    <ClCompile Include="main.c" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B0E01D68-2115-4E74-8D01-78FC5E959461}</ProjectGuid>
     <RootNamespace>mm</RootNamespace>
