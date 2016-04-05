@@ -3,21 +3,20 @@
 
 #include <stdint.h>
 
-typedef uint8_t mm_err_t;
-typedef uint8_t mm_bool_t;
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
 
-#define mm_false 0
-#define mm_true	1
+typedef uint8_t mm_err_t;
 
 #define MM_ERR_OK				0
-#define MM_ERR_INVALID_MM		1
-#define MM_ERR_INVALID_TYPE		2
-#define MM_ERR_INVALID_SIZE		3
-#define MM_ERR_INVALID_BUFFER	4
-#define MM_ERR_TOO_MANY_ALLOCS	5
-#define MM_ERR_NOT_DONE			6
-#define MM_ERR_ALREADY_DONE		7
-#define MM_ERR_INIT_ERR			8
+#define MM_ERR_INVALID_CONFIG	1
+#define MM_ERR_INVALID_MM		2
+#define MM_ERR_INVALID_TYPE		3
+#define MM_ERR_INVALID_SIZE		4
+#define MM_ERR_INVALID_BUFFER	5
+#define MM_ERR_TOO_MANY_ALLOCS	6
+#define MM_ERR_INIT_ERR			7
 
 #define MM_SET_ERR(err, val) if(err) *err = val
 #define MM_SET_ERR_IF(cond, err, val, action) if(cond){ MM_SET_ERR(err, val); action;}
