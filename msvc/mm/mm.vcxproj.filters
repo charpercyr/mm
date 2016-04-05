@@ -24,7 +24,7 @@
     <ClInclude Include="..\..\src\mm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\simple_mm.h">
+    <ClInclude Include="..\..\src\buddy_allocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\simple_mm.c">
+    <ClCompile Include="..\..\src\buddy_allocator.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

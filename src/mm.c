@@ -35,7 +35,7 @@ void mm_config_add_allocator(mm_config_t* config, mm_type_t* type, size_t block,
 	config->n_allocators++;
 }
 
-void mm_init(mm_t* mm, mm_config_t* config, void* buffer, mm_err_t* err)
+void mm_init(mm_t* mm, mm_config_t* config, void* alloc_buffer, void* buffer, mm_err_t* err)
 {
 	MM_SET_ERR(err, MM_ERR_OK);
 	MM_SET_ERR_IF(mm == NULL, err, MM_ERR_INVALID_MM, return;);
@@ -60,24 +60,33 @@ void mm_init(mm_t* mm, mm_config_t* config, void* buffer, mm_err_t* err)
 		mm->allocators[i].free = config->types[i].type->free;
 		mm->allocators[i].realloc = config->types[i].type->realloc;
 		mm->allocators[i].allocator_size = config->types[i].type->allocator_size(size, config->types[i].block);
-		size = config->types[i].block;
 		offset += mult*mm->allocators[i].allocator_size;
 		mult *= size / mm->allocators[i].block;
+		size = config->types[i].block;
 	}
 
-	mm->allocs = buffer;
-	mm->mem = (char*)buffer + offset;
+	mm->allocs = alloc_buffer;
+	mm->mem = buffer;
+	mm->alloc_size = 0;
 
 	offset = 0;
 	size = mm->size;
+	mult = 1;
 	for (i = 0; i < config->n_allocators; i++)
 	{
+		mm_allocator_info_t info;
+		info.size = size;
+		info.block_size = mm->allocators[i].block;
+		info.allocator_size = mm->allocators[i].allocator_size;
+		info.n_blocks = info.size / info.block_size;
 		for (j = 0; j < mult; j++)
 		{
-			config->types[i].type->init((char*)buffer + offset, size, mm->allocators[i].block, mm->allocators[i].allocator_size, err);
+			config->types[i].type->init((char*)buffer + offset, &info, err);
 			MM_SET_ERR_IF(err2, err, err2, return;);
 			offset += mm->allocators[i].allocator_size;
 		}
+		mult *= size / mm->allocators[i].block;
+		size = mm->allocators[i].block;
 	}
 }
 
@@ -92,6 +101,21 @@ void mm_free(mm_t* mm, void* ptr, mm_err_t* err)
 }
 
 void* mm_realloc(mm_t* mm, void* ptr, size_t size, mm_err_t* err)
+{
+
+}
+
+void* mm_sub_malloc(mm_t* mm, size_t size, size_t block, mm_err_t* err)
+{
+
+}
+
+void mm_sub_free(mm_t* mm, void* ptr, size_t block, mm_err_t* err)
+{
+
+}
+
+void* mm_sub_realloc(mm_t* mm, void* ptr, size_t size, size_t block, mm_err_t* err)
 {
 
 }

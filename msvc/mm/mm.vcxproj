@@ -19,15 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\buddy_allocator.h" />
     <ClInclude Include="..\..\src\mm.h" />
     <ClInclude Include="..\..\src\common.h" />
     <ClInclude Include="..\..\src\config.h" />
-    <ClInclude Include="..\..\src\simple_mm.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\buddy_allocator.c" />
     <ClCompile Include="..\..\src\mm.c" />
     <ClCompile Include="..\..\src\common.c" />
-    <ClCompile Include="..\..\src\simple_mm.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
