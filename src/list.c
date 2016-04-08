@@ -169,6 +169,8 @@ POOL_FUNC void pool_list_iterate(pool_list* list, pool_list_iterate_func func, v
  */
 POOL_FUNC pool_size pool_list_size(pool_list* list, pool_err* err)
 {
+	POOL_SET_ERR(err, POOL_ERR_OK);
+	POOL_SET_ERR_IF(list == NULL, err, POOL_LIST_ERR_INVALID_LIST, 0);
 	pool_size size = 0;
 	pool_list_node* node = list->head;
 	while(node != NULL)
