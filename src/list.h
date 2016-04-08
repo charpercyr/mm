@@ -116,5 +116,13 @@ POOL_FUNC void pool_list_delete(pool_list* list, pool_err* err);
 */
 POOL_FUNC void pool_list_iterate(pool_list* list, pool_list_iterate_func func, void* data, pool_err* err);
 
+/**
+ * @fn pool_size pool_list_size(pool_list* list, pool_err* err)
+ * @brief Calculates the size of the list
+ *
+ * @param[in] list The list
+ * @param[out] err The error
+ */
+POOL_FUNC pool_size pool_list_size(pool_list* list, pool_err* err);
 /** @} */
 #endif

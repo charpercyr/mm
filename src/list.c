@@ -159,3 +159,22 @@ POOL_FUNC void pool_list_iterate(pool_list* list, pool_list_iterate_func func, v
 		n = n->next;
 	}
 }
+
+/**
+ * @fn pool_size pool_list_size(pool_list* list, pool_err* err)
+ * @brief Calculates the size of the list
+ *
+ * @param[in] list The list
+ * @param[out] err The error
+ */
+POOL_FUNC pool_size pool_list_size(pool_list* list, pool_err* err)
+{
+	pool_size size = 0;
+	pool_list_node* node = list->head;
+	while(node != NULL)
+	{
+		size++;
+		node = node->next;
+	}
+	return size;
+}
